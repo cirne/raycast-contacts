@@ -72,6 +72,8 @@ export type Contact = {
   firstName: string;
   lastName: string;
   displayName: string;
+  urls: string[];
+  photos: string[];
   emails: { title: string; email: string }[];
   phones: { title: string; phone: string }[];
 };
@@ -83,7 +85,7 @@ export type Contact = {
   const params = new URLSearchParams();
   params.append("pageSize", "20");
   params.append("query", searchTerm);
-  params.append("readMask", "names,emailAddresses,phoneNumbers");
+  params.append("readMask", "names,emailAddresses,phoneNumbers,urls,photos");
   const url = "https://people.googleapis.com/v1/people:searchContacts?" + params.toString();
   const response = await fetch(url, {
     headers: {
@@ -116,6 +118,8 @@ export type Contact = {
       }
     })
 
+    
+
     // create an empty Contact object
     const id = person.resourceName.split('/')[1];
     const contact: Contact = {
@@ -125,6 +129,8 @@ export type Contact = {
       lastName: name.familyName,
       displayName: name.displayName,
       emails: emails,
+      urls: (person.urls||[]).map((url: any) => url.value),
+      photos: (person.photos||[]).map((photo: any) => photo.url),
       phones: (person.phoneNumbers||[]).map((phone: any) => {
         return {
           title: phone.formattedType,

@@ -14,7 +14,7 @@
       "name": "contacts",
       "title": "Contacts",
       "subtitle": "Google contacts",
-      "description": "Access Google contacts, copy email, phone number address and more",
+      "description": "Access Google contacts, copy email, phone number and more",
       "mode": "view"
     }
   ],

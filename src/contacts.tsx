@@ -50,7 +50,8 @@ export default function Command() {
 }
 
 function ContactDetail(contact: google.Contact): JSX.Element {
-  const markdown = `# ${contact.displayName} `
+  const markdown = `# ${contact.displayName} \n\n`+
+    contact.urls.map((url) => `[${url}](${url})`).join("\n") + "\n\n" 
 
   return (
     <List.Item.Detail
