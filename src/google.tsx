@@ -68,6 +68,7 @@ async function refreshTokens(refreshToken: string): Promise<OAuth.TokenResponse>
 
 export type Contact = {
   id: string;
+  contactUrl: string;
   firstName: string;
   lastName: string;
   displayName: string;
@@ -107,8 +108,6 @@ export type Contact = {
       return null;
     }
     const name = person.names[0];
-    console.log("emailAddresses", person.emailAddresses)
-    console.log("phoneNumbers", person.phoneNumbers)
 
     const emails = (person.emailAddresses||[]).map((email: any) => {
       return {
@@ -118,8 +117,10 @@ export type Contact = {
     })
 
     // create an empty Contact object
+    const id = person.resourceName.split('/')[1];
     const contact: Contact = {
-      id: person.resourceName,
+      id,
+      contactUrl: `https://contacts.google.com/person/${id}`,
       firstName: name.givenName,
       lastName: name.familyName,
       displayName: name.displayName,
@@ -131,7 +132,7 @@ export type Contact = {
         }
       })
     }
-    
+    console.log(person.resourceName, contact)
     return contact;   
   }).filter((item: Contact | null) => item !== null);
  

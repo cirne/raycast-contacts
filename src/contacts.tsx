@@ -1,4 +1,4 @@
-import { List, Detail, Toast, showToast, Icon } from "@raycast/api";
+import { List, Detail, Toast, showToast, Icon, ActionPanel, Action } from "@raycast/api";
 import * as google from "./google";
 import { useState, useEffect } from "react";
 
@@ -13,8 +13,7 @@ export default function Command() {
       try {
         setIsLoading(true);
         await google.authorize();
-        const contacts = await google.fetchContacts(searchText);
-        console.log("contacts", contacts);
+        const contacts = await google.fetchContacts(searchText);        
         setItems(contacts);
         setIsLoading(false);
       } catch (error) {
@@ -25,15 +24,23 @@ export default function Command() {
     })();
   }, [searchText]);
 
+
   if (isLoading) {
     return <Detail isLoading={isLoading} />;
   }
 
   return (
-    <List isLoading={isLoading} onSearchTextChange={setSearchText} searchBarPlaceholder="Search Google Contacts" throttle isShowingDetail>
+    <List 
+      isLoading={isLoading} 
+      onSearchTextChange={setSearchText} 
+      searchBarPlaceholder="Search Google Contacts" 
+      throttle isShowingDetail>
+      {searchText === ""  && <List.EmptyView title="Search Google Contacts" />}
       {items.map((contact: google.Contact) => {
         return <List.Item 
           key={contact.id}
+          id={contact.id}
+          actions={ContactActions(contact)}
           title={contact.displayName}
           detail={ContactDetail(contact)}          
         />;
@@ -70,3 +77,22 @@ function ContactDetail(contact: google.Contact): JSX.Element {
     />
   )
 }
+
+function ContactActions(contact: google.Contact): JSX.Element {
+  return (
+    <ActionPanel>
+      <Action.OpenInBrowser 
+        icon={Icon.Person}
+        url={contact.contactUrl} 
+        title="Show in Google Contacts"/>
+      <ActionPanel.Section title="Copy to Clipboard">
+      {contact.emails.map((email) => (
+        <Action.CopyToClipboard key={email.email} icon={Icon.Envelope} title={email.email} content={email.email} />
+      ))}
+      {contact.phones.map((phone) => (
+        <Action.CopyToClipboard key={phone.phone} icon={Icon.Phone} title={phone.phone} content={phone.phone} />
+      ))}
+      </ActionPanel.Section>
+    </ActionPanel>
+  );
+} 
