@@ -66,7 +66,6 @@ async function refreshTokens(refreshToken: string): Promise<OAuth.TokenResponse>
   return tokenResponse;
 }
 
-// API
 export type Contact = {
   id: string;
   firstName: string;
@@ -76,31 +75,10 @@ export type Contact = {
   phones: { title: string; phone: string }[];
 };
 
-export async function fetchItems(): Promise<{ id: string; title: string }[]> {
-  const params = new URLSearchParams();
-  params.append("q", "trashed = false");
-  params.append("fields", "files(id, name, mimeType, iconLink, modifiedTime, webViewLink, webContentLink, size)");
-  params.append("orderBy", "recency desc");
-  params.append("pageSize", "100");
 
-  const response = await fetch("https://www.googleapis.com/drive/v3/files?" + params.toString(), {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${(await client.getTokens())?.accessToken}`,
-    },
-  });
-  if (!response.ok) {
-    console.error("fetch items error:", await response.text());
-    throw new Error(response.statusText);
-  }
-  const json = (await response.json()) as { files: { id: string; name: string }[] };
-  return json.files.map((item) => ({ id: item.id, title: item.name }));
-}
-
-
-export async function fetchContacts(searchTerm: string): Promise<Contact[]> {
   // call google contacts api to search for contacts matching this term
   // return array of contacts
+  export async function fetchContacts(searchTerm: string): Promise<Contact[]> {
   const params = new URLSearchParams();
   params.append("pageSize", "20");
   params.append("query", searchTerm);
