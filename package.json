@@ -12,8 +12,8 @@
   "commands": [
     {
       "name": "contacts",
-      "title": "Contacts",
-      "subtitle": "Google contacts",
+      "title": "Google Contacts",
+      "subtitle": "",
       "description": "Access Google contacts, copy email, phone number and more",
       "mode": "view"
     }
