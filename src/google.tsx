@@ -138,7 +138,6 @@ export type Contact = {
         }
       })
     }
-    console.log(person.resourceName, contact)
     return contact;   
   }).filter((item: Contact | null) => item !== null);
  

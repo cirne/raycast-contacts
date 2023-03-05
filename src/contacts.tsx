@@ -15,7 +15,7 @@ export default function Command() {
         await google.authorize();
         const contacts = await google.fetchContacts(searchText);        
         setItems(contacts);
-        setIsLoading(false);
+        setIsLoading(false);        
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -25,14 +25,11 @@ export default function Command() {
   }, [searchText]);
 
 
-  if (isLoading) {
-    return <Detail isLoading={isLoading} />;
-  }
-
   return (
     <List 
       isLoading={isLoading} 
       onSearchTextChange={setSearchText} 
+      searchText={searchText}
       searchBarPlaceholder="Search Google Contacts" 
       throttle isShowingDetail>
       {searchText === ""  && <List.EmptyView title="Search Google Contacts" />}
