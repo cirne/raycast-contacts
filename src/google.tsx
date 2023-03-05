@@ -13,7 +13,7 @@ const client = new OAuth.PKCEClient({
   providerName: "Google",
   providerIcon: "google-logo.png",
   providerId: "google",
-  description: "Connect your Google account\n(Raycast Extension Demo)",
+  description: "Connect your Google account to Raycast to search your contacts",
 });
 
 // Authorization
@@ -111,6 +111,11 @@ export async function fetchContacts(searchTerm: string): Promise<Contact[]> {
 
 
     const id = person.resourceName.split('/')[1];
+
+    // strip out linkedin urls that are out of network (they don't work)
+    const urls = person.urls?.map((url: any) => url.value)
+      .filter((url: string) => !url.includes('OUT_OF_NETWORK')) || [];
+
     const contact: Contact = {
       id,
       contactUrl: `https://contacts.google.com/person/${id}`,
@@ -118,7 +123,7 @@ export async function fetchContacts(searchTerm: string): Promise<Contact[]> {
       lastName: name.familyName,
       displayName: name.displayName,
       emails: emails,
-      urls: (person.urls || []).map((url: any) => url.value),
+      urls,
       photos: (person.photos || []).map((photo: any) => photo.url),
       phones: (person.phoneNumbers || []).map((phone: any) => {
         return {

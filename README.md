@@ -1,3 +1,3 @@
 # Contacts
 
-Search icloud contacts
+Search your Google contacts in Raycast
