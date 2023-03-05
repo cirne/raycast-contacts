@@ -1,5 +1,7 @@
 import { OAuth } from "@raycast/api";
 import fetch from "node-fetch";
+import { Contact } from './types'
+
 
 // Create an OAuth client ID via https://console.developers.google.com/apis/credentials
 // As application type choose "iOS" (required for PKCE)
@@ -66,22 +68,10 @@ async function refreshTokens(refreshToken: string): Promise<OAuth.TokenResponse>
   return tokenResponse;
 }
 
-export type Contact = {
-  id: string;
-  contactUrl: string;
-  firstName: string;
-  lastName: string;
-  displayName: string;
-  urls: string[];
-  photos: string[];
-  emails: { title: string; email: string }[];
-  phones: { title: string; phone: string }[];
-};
 
-
-  // call google contacts api to search for contacts matching this term
-  // return array of contacts
-  export async function fetchContacts(searchTerm: string): Promise<Contact[]> {
+// call google contacts api to search for contacts matching this term
+// return array of contacts
+export async function fetchContacts(searchTerm: string): Promise<Contact[]> {
   const params = new URLSearchParams();
   params.append("pageSize", "20");
   params.append("query", searchTerm);
@@ -96,31 +86,30 @@ export type Contact = {
   if (!response.ok) {
     console.error("fetch items error:", await response.text());
     throw new Error(response.statusText);
-  }  
+  }
 
   const json = await (response.json()) as any;
-  if(!json?.results) {
+  if (!json?.results) {
     return [];
   }
 
   return json.results.map((item: any) => {
-    const {person} = item;
+    const { person } = item;
 
-    if(!person.names || person.names.length === 0) {
+    if (!person.names || person.names.length === 0) {
       return null;
     }
     const name = person.names[0];
 
-    const emails = (person.emailAddresses||[]).map((email: any) => {
+    const emails = (person.emailAddresses || []).map((email: any) => {
       return {
         title: email.formattedType,
         email: email.value
       }
     })
 
-    
 
-    // create an empty Contact object
+
     const id = person.resourceName.split('/')[1];
     const contact: Contact = {
       id,
@@ -129,17 +118,17 @@ export type Contact = {
       lastName: name.familyName,
       displayName: name.displayName,
       emails: emails,
-      urls: (person.urls||[]).map((url: any) => url.value),
-      photos: (person.photos||[]).map((photo: any) => photo.url),
-      phones: (person.phoneNumbers||[]).map((phone: any) => {
+      urls: (person.urls || []).map((url: any) => url.value),
+      photos: (person.photos || []).map((photo: any) => photo.url),
+      phones: (person.phoneNumbers || []).map((phone: any) => {
         return {
           title: phone.formattedType,
           phone: phone.value
         }
       })
     }
-    return contact;   
+    return contact;
   }).filter((item: Contact | null) => item !== null);
- 
+
 }
 

@@ -1,10 +1,11 @@
 import { List, Detail, Toast, showToast, Icon, ActionPanel, Action } from "@raycast/api";
 import * as google from "./google";
 import { useState, useEffect } from "react";
+import { Contact } from "./types";
 
 export default function Command() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [items, setItems] = useState<google.Contact[]>([]);
+  const [items, setItems] = useState<Contact[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
 
@@ -33,7 +34,7 @@ export default function Command() {
       searchBarPlaceholder="Search Google Contacts" 
       throttle isShowingDetail>
       {searchText === ""  && <List.EmptyView title="Search Google Contacts" />}
-      {items.map((contact: google.Contact) => {
+      {items.map((contact: Contact) => {
         return <List.Item 
           key={contact.id}
           actions={ContactActions(contact)}
@@ -45,7 +46,7 @@ export default function Command() {
   );
 }
 
-function ContactDetail(contact: google.Contact): JSX.Element {
+function ContactDetail(contact: Contact): JSX.Element {
   const markdown = `# ${contact.displayName} \n\n`+
     contact.urls.map((url) => `[${url}](${url})`).join("\n") + "\n\n" 
 
@@ -75,7 +76,7 @@ function ContactDetail(contact: google.Contact): JSX.Element {
   )
 }
 
-function ContactActions(contact: google.Contact): JSX.Element {
+function ContactActions(contact: Contact): JSX.Element {
   return (
     <ActionPanel>
       <Action.OpenInBrowser 
