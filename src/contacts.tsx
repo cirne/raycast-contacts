@@ -39,7 +39,6 @@ export default function Command() {
       {items.map((contact: google.Contact) => {
         return <List.Item 
           key={contact.id}
-          id={contact.id}
           actions={ContactActions(contact)}
           title={contact.displayName}
           detail={ContactDetail(contact)}          
