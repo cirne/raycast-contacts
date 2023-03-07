@@ -29,5 +29,3 @@ If you want to make contributions, feel free to open a PR!
 ## License
 This project is licensed under the terms of the MIT license.
 
-
-d
